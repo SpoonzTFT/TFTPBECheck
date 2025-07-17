@@ -1,15 +1,14 @@
 const fetch = require("node-fetch");
 
 const API_KEY = process.env.PUSHCUT_API_KEY;
-const TESTFLIGHT_URL = process.env.TESTFLIGHT_URL;
+const TESTFLIGHT_URL = "https://example.com"; // fake URL for test
 
 (async () => {
-  const res = await fetch(TESTFLIGHT_URL);
-  const text = await res.text();
+  // Force trigger notification
+  const isFull = false;
 
-  const isFull = text.includes("This beta is full");
   if (!isFull) {
-    console.log("Slot is open — sending notification");
+    console.log("Simulated open slot — sending notification");
 
     await fetch("https://api.pushcut.io/v1/notifications", {
       method: "POST",

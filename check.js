@@ -1,7 +1,7 @@
 const fetch = require("node-fetch");
 
 const API_KEY = process.env.PUSHCUT_API_KEY;
-const PUSHCUT_NOTIFICATION_ID = "https://api.pushcut.io/KYw8-pAhYoebZ21igemDW/notifications/TFT_PBE_Alert";
+const PUSHCUT_NOTIFICATION_ID = "TFT_PBE_Alert";
 
 (async () => {
   try {

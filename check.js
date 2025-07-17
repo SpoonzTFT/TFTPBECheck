@@ -1,25 +1,34 @@
-// check.js
-const fetch = require('node-fetch');
-const Pushcut = require('pushcut');
+const fetch = require("node-fetch");
 
-const TESTFLIGHT_URL = process.env.TESTFLIGHT_URL;
 const API_KEY = process.env.PUSHCUT_API_KEY;
-const pushcut = new Pushcut(API_KEY);
-const JOIN_URL = TESTFLIGHT_URL;
+const TESTFLIGHT_URL = process.env.TESTFLIGHT_URL;
 
-async function check() {
+(async () => {
   const res = await fetch(TESTFLIGHT_URL);
-  const html = await res.text();
-  if (!/This beta (is full|isn’t accepting|is closed)/i.test(html)) {
-    await pushcut.notify({
-      title: '🎯 TFT PBE is OPEN!',
-      text: 'Tap to join now',
-      actions: [{ title: 'Join Now' }],
-    });
-    console.log('OPEN detected — notification sent.');
-  } else {
-    console.log('Still full or closed.');
-  }
-}
+  const text = await res.text();
 
-check().catch(console.error);
+  const isFull = text.includes("This beta is full");
+  if (!isFull) {
+    console.log("Slot is open — sending notification");
+
+    await fetch("https://api.pushcut.io/v1/notifications", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "API-Key": API_KEY,
+      },
+      body: JSON.stringify({
+        title: "TFT PBE Slot Open!",
+        text: "Click to join the TestFlight now.",
+        actions: [
+          {
+            title: "Join Now",
+            url: TESTFLIGHT_URL
+          }
+        ]
+      }),
+    });
+  } else {
+    console.log("Still full. Will check again soon.");
+  }
+})();
